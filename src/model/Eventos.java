@@ -1,14 +1,16 @@
 package model;
 
+import enums.Categoria;
+
 public class Eventos {
 
     private String nome;
     private String endereco;
-    private String categoria;
+    private Categoria categoria;
     private String horario;
     private String descricao;
 
-    public Eventos(String nome, String endereco, String categoria, String horario, String descricao) {
+    public Eventos(String nome, String endereco, Categoria categoria, String horario, String descricao) {
         this.nome = nome;
         this.endereco = endereco;
         this.categoria = categoria;
@@ -32,11 +34,11 @@ public class Eventos {
         this.endereco = endereco;
     }
 
-    public String getCategoria() {
+    public Categoria getCategoria() {
         return categoria;
     }
 
-    public void setCategoria(String categoria) {
+    public void setCategoria(Categoria categoria) {
         this.categoria = categoria;
     }
 
@@ -58,7 +60,14 @@ public class Eventos {
 
     @Override
     public String toString() {
-        return "Eventos{" + "nome = " + nome + ", endereco = " + endereco + ", categoria = " + categoria + ", horario = " + horario + ", descricao = " + descricao + '}';
+        return """            
+               === Evento ===
+               Nome: """ + nome
+                + "\nEndereco: " + endereco
+                + "\nCategoria: " + categoria
+                + "\nHorario: " + horario
+                + "\nDescricao: " + descricao
+                + "\n";
     }
 
 }
