@@ -3,6 +3,9 @@ package application;
 import controller.EventosController;
 import controller.UsuarioController;
 import enums.Categoria;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -12,12 +15,13 @@ import view.EventosView;
 import view.UsuarioView;
 
 public class Program {
-
-    private static List<Eventos> listaDeEventos = new ArrayList<>();
-
+    
+    private static final List<Eventos> listaDeEventos = new ArrayList<>();
+    private static final String FILE_NAME = "events.data";
+    
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
-
+        
         while (true) {
             // Menu
             System.out.println();
@@ -26,9 +30,9 @@ public class Program {
             System.out.println("2 = Cadastrar Evento");
             System.out.println("3 = Ver Eventos Cadastrados");
             System.out.println("4 = Sair");
-
+            
             int numero = sc.nextInt();
-
+            
             switch (numero) {
                 case 1 -> {
                     cadastrarUsuario(sc);
@@ -49,9 +53,9 @@ public class Program {
                     System.out.println("Numero invalido !");
             }
         }
-
+        
     }
-
+    
     private static int lerOpcao(Scanner sc, int min, int max) {
         while (true) {
             if (sc.hasNextInt()) {
@@ -66,22 +70,22 @@ public class Program {
             System.out.print("Opcao invalida. Digite um numero entre " + min + " e " + max + ": ");
         }
     }
-
+    
     private static void cadastrarUsuario(Scanner sc) {
         // Cadastro do Usuário
         System.out.println("* CADASTRO DO USUARIO *");
         System.out.println();
-
+        
         sc.nextLine();
-
+        
         System.out.println("Informe seu Nome: ");
         String nomeUsuario = sc.nextLine();
-
+        
         System.out.println("Informe sua Idade: ");
         int idadeUsuario = sc.nextInt();
-
+        
         sc.nextLine();
-
+        
         System.out.println("Informe seu Telefone: ");
         String telefoneUsuario = sc.nextLine();
 
@@ -91,25 +95,25 @@ public class Program {
         UsuarioView view = new UsuarioView();
         UsuarioController usuarioController = new UsuarioController(usuario, view);
         usuarioController.atualizarView();
-
+        
     }
-
+    
     private static void cadastrarEvento(Scanner sc) {
         // Cadastro de Evento
 
         sc.nextLine();
         System.out.println("* CADASTRO DE EVENTO *");
         System.out.println();
-
+        
         System.out.println("Digite o nome do evento: ");
         String nomeEvento = sc.nextLine();
-
+        
         System.out.println("Digite o endereco do evento: ");
         String enderecoEvento = sc.nextLine();
-
+        
         System.out.println("Digite o horario do evento: ");
         String horarioEvento = sc.nextLine();
-
+        
         System.out.println("Escolha a categoria do evento:");
         Categoria[] categorias = Categoria.values();
         for (int n = 0; n < categorias.length; n++) {
@@ -117,7 +121,7 @@ public class Program {
         }
         int opcaoCategoria = lerOpcao(sc, 1, categorias.length);
         Categoria categoriaEvento = categorias[opcaoCategoria - 1];
-
+        
         System.out.println("Digite a descricao do evento: ");
         String descricaoEvento = sc.nextLine();
 
@@ -127,13 +131,30 @@ public class Program {
         EventosView eventosView = new EventosView();
         EventosController eventosController = new EventosController(eventos, eventosView);
         eventosController.atualizarView();
-
+        
         listaDeEventos.add(eventos);
+        salvarEventoNoArquivo(eventos);
     }
-
+    
     private static void verificarEventos() {
         for (Eventos e : listaDeEventos) {
             System.out.println(e);
+        }
+    }
+    
+    private static void salvarEventoNoArquivo(Eventos e) {
+        String linha
+                = e.getNome() + ";"
+                + e.getEndereco() + ";"
+                + e.getCategoria().name() + ";"
+                + e.getHorario() + ";"
+                + e.getDescricao();
+        
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(FILE_NAME, true))) {
+            bw.write(linha);
+            bw.newLine();
+        } catch (IOException ex) {
+            System.out.println("Erro ao salvar o evento no arquivo: " + ex.getMessage());
         }
     }
 }
